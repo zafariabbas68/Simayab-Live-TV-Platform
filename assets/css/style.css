@@ -223,7 +223,7 @@ footer{max-width:1560px;margin:10px auto 40px;padding:0 24px;color:var(--mute);f
 .card.off,.row.off{opacity:.55}
 .card.off:hover,.row.off:hover,.card.off.on,.row.off.on{opacity:.9}
 
-/* ================= Watermark + fullscreen button ================= */
+/* ================= Watermark ================= */
 .wm{position:absolute;left:16px;bottom:58px;z-index:2147483000;display:flex;align-items:center;gap:9px;padding:6px 14px 6px 8px;border-radius:999px;pointer-events:none;user-select:none;direction:ltr;
   background:linear-gradient(135deg,#0b1a4af0,#070b14e0);border:1px solid #ffffff2e;box-shadow:0 6px 22px #0007;opacity:.92;
   transform:translateZ(0);will-change:transform;isolation:isolate}
@@ -235,8 +235,81 @@ footer{max-width:1560px;margin:10px auto 40px;padding:0 24px;color:var(--mute);f
 .player:fullscreen{border-radius:0;border:0;aspect-ratio:auto;width:100vw;height:100vh}
 .player:-webkit-full-screen .wm{left:28px;bottom:84px;transform:translateZ(0) scale(1.2);transform-origin:left bottom}
 .player:fullscreen .wm{left:28px;bottom:84px;transform:translateZ(0) scale(1.2);transform-origin:left bottom}
-.fsb{position:absolute;top:12px;right:12px;z-index:2147483001;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#070b14d9;border:1px solid #ffffff2a;color:#fff;opacity:0;transition:.2s}
-.fsb svg{width:18px}
-.player:hover .fsb,.fsb:focus-visible{opacity:1}
-@media(hover:none){.fsb{opacity:.85}}
 @media(max-width:700px){.wm{left:10px;bottom:50px;padding:4px 10px 4px 6px}.wm svg{width:20px;height:20px}.wm b{font-size:12px}.wm span{display:none}}
+
+/* ================= Custom player controls (so fullscreen always includes the Simayab watermark) ================= */
+.ctl{position:absolute;left:0;right:0;bottom:0;z-index:2147483001;display:flex;align-items:center;gap:6px;padding:34px 12px 10px;direction:ltr;
+  background:linear-gradient(180deg,transparent,#000000cc);opacity:0;transition:opacity .25s;pointer-events:none}
+.player.ui .ctl,.player.paused .ctl,.ctl:focus-within{opacity:1;pointer-events:auto}
+.player:not(.ui):not(.paused){cursor:none}
+.ctl button{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#fff;transition:.15s;flex:none}
+.ctl button:hover{background:#ffffff26}
+.ctl button svg{width:21px;height:21px}
+.csp{flex:1}
+#cvol{width:84px;accent-color:var(--gold);height:4px;cursor:pointer}
+.player:fullscreen .ctl,.player:-webkit-full-screen .ctl{padding-bottom:18px}
+@media(max-width:700px){#cvol{display:none}.ctl button{width:36px;height:36px}}
+
+/* pseudo-fullscreen (iPhone) */
+html.pfs-lock,html.pfs-lock body{overflow:hidden}
+.player.pfs{position:fixed;inset:0;z-index:2147482000;width:100vw;height:100vh;height:100dvh;aspect-ratio:auto;border-radius:0;border:0}
+.player.pfs .wm{left:20px;bottom:76px}
+/* portrait phone in pseudo fullscreen: rotate the whole player 90° so it is shown enlarged in landscape */
+.player.pfs.rot{inset:auto;top:0;left:100%;right:auto;bottom:auto;width:100vh;height:100vw;width:100dvh;height:100dvw;transform:rotate(90deg);transform-origin:0 0}
+
+
+/* ================= Mobile polish ================= */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}   /* phones with a notch in landscape */
+button,a,.row,.card,.tab,.chip,.tile{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.bar>*{min-width:0}
+.search{min-width:0}
+@media(pointer:coarse){                       /* touch screens: comfortable tap targets, no hover-only controls */
+  .pill{min-height:40px}
+  .lang button{min-height:38px;padding:9px 14px}
+  .tab{min-height:40px;display:inline-flex;align-items:center}
+  .chip{min-height:40px}
+  .tool{width:44px;height:44px}
+  .ctl button{width:42px;height:42px}
+  .row .fv{opacity:.55;width:26px;height:26px;display:grid;place-items:center}
+  .row .fv svg{width:20px;height:20px}
+  .row .fv.on{opacity:1}
+  .card:hover,.tile:hover{translate:none}
+}
+@media(max-width:1080px){
+  aside{height:min(64vh,640px);height:min(64dvh,640px)}
+}
+@media(max-width:700px){
+  .top{transition:transform .25s ease}
+  .top.navhide{transform:translateY(-101%)}
+  .now{padding:12px;gap:12px}
+  .now .meta{min-width:0;flex-basis:55%}
+  .now h1{font-size:17px}
+  .tools{gap:6px;margin-inline-start:auto}
+  .banner{padding:14px}
+  .tile{padding:18px}
+  .mi,.row{min-height:56px}
+  .ov{padding:14px 14px 78px}
+  .ov h3{font-size:16px;margin:10px 0 4px}
+  .ov p{font-size:13px}
+  .spin{width:36px;height:36px}
+}
+@media(max-width:380px){
+  .bar{gap:8px;padding-inline:10px}
+  .regions{padding-inline:10px}
+  .lang button{padding-inline:10px}
+  .pill{padding-inline:10px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{padding:12px}
+}
+/* phones held sideways: player and channel list side by side, header scrolls away, picture never taller than the screen */
+@media(orientation:landscape) and (max-height:520px) and (min-width:560px){
+  .top{position:static}
+  .watch{grid-template-columns:minmax(0,1fr) 260px;gap:12px;padding:10px 12px 0;scroll-margin-top:0}
+  aside{position:sticky;top:10px;min-height:0;height:calc(100vh - 20px);height:calc(100dvh - 20px)}
+  .stage{gap:10px}
+  .player{max-height:calc(100vh - 20px);max-height:calc(100dvh - 20px)}
+  .now{padding:10px 12px}
+  .now h1{font-size:16px}
+  .tool{width:38px;height:38px}
+}
