@@ -25,7 +25,7 @@ const T={
       auto:"خودکار",pip:"تصویر در تصویر",favt:"علاقه‌مندی",share:"کپی لینک",copied:"لینک کپی شد",
       demo:"پخش آزمایشی — لینک واقعی شبکه تنظیم نشده",
       channels:"شبکه",viewall:"دیدن همه",explore:"کاوش شبکه‌ها",catall:"همه دسته‌ها",
-      foot:"سیماب فقط یک رابط تماشا است. مالکیت هر شبکه متعلق به صاحب آن است؛ فقط لینک‌هایی را اضافه کنید که اجازهٔ پخش آن را دارید.",
+      foot:"سیمایاب فقط یک رابط تماشا است. مالکیت هر شبکه متعلق به صاحب آن است؛ فقط لینک‌هایی را اضافه کنید که اجازهٔ پخش آن را دارید.",
       group:{af:"شبکه‌های افغانستان",ir:"شبکه‌های ایران",intl:"شبکه‌های بین‌المللی"},
       rd:{af:"شبکه‌های ملی، خبری، سرگرمی و فرهنگی افغانستان.",
           ir:"شبکه‌های ملی صدا و سیما، خبر، ورزش، آموزش و فرهنگ ایران.",
@@ -305,15 +305,17 @@ function warm(id){
 
 /* ---------- Watermark (Persian eight-pointed star + brand name) ---------- */
 function renderWatermark(){
-  const B=CONFIG.BRAND||{en:"Simayab",fa:"سیماب"};
-  const en=B.en, i=Math.max(1,Math.ceil(en.length/2));
+  const B=CONFIG.BRAND||{};
+  const en=B.en||"Simayab";
+  const fa="سیمایاب";   // Persian brand name (corrected: Simayab, not Simab)
+  const i=Math.max(1,Math.ceil(en.length/2));
   $("#wm").innerHTML=`<svg viewBox="0 0 48 48" fill="none" stroke-linejoin="round">
       <defs><linearGradient id="wmg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ea2ff"/><stop offset="1" stop-color="#2a5bff"/></linearGradient></defs>
       <circle cx="24" cy="24" r="22" stroke="#e8b657" stroke-width="1.6"/>
       <rect x="9.5" y="9.5" width="29" height="29" rx="2" fill="url(#wmg)" stroke="#e8b657" stroke-width="1.6"/>
       <rect x="9.5" y="9.5" width="29" height="29" rx="2" transform="rotate(45 24 24)" fill="#0b2a9a" fill-opacity=".85" stroke="#e8b657" stroke-width="1.6"/>
       <circle cx="24" cy="24" r="5" fill="#e8b657"/><circle cx="24" cy="24" r="2" fill="#0b2a9a"/>
-    </svg><b>${en.slice(0,i)}<i>${en.slice(i)}</i></b><span>${B.fa}</span>`;
+    </svg><b>${en.slice(0,i)}<i>${en.slice(i)}</i></b><span>${fa}</span>`;
 }
 
 /* ---------- Custom player controls ---------- */
