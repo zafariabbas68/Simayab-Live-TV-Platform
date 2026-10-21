@@ -5,7 +5,7 @@
 
 /* ---------- i18n ---------- */
 const T={
-  en:{search:"Search channels…",all:"All",af:"Afghanistan",ir:"Iran",intl:"International",fav:"Favorites",
+  en:{search:"Search channels…",searchS:"Search…",all:"All",af:"Afghanistan",ir:"Iran",intl:"International",fav:"Favorites",
       live:"LIVE",loading:"Connecting to stream…",err:"This channel isn't responding",errp:"We tried every available source. The channel may be offline or restricted in your region.",
       retry:"Try again",next:"Next channel",soon:"SOON",nosrc:"No public stream available yet",nosrcp:"This broadcaster doesn't offer an open public stream (many IRIB networks are limited to viewers inside Iran). If you hold a licensed stream URL, add it in assets/js/channels.js.",
       noresult:"No channels found",nofav:"Tap the star on any channel to save it here.",
@@ -18,14 +18,14 @@ const T={
           ir:"IRIB national networks, news, sports, education and culture from Iran.",
           intl:"Global news and sports channels from around the world in English, Arabic, Persian and more."},
       cat:{General:"General",News:"News",Entertainment:"Entertainment",Education:"Education",Religion:"Religion",Health:"Health",Sports:"Sports",Documentary:"Documentary",Kids:"Kids"}},
-  fa:{search:"جستجوی شبکه‌ها…",all:"همه",af:"افغانستان",ir:"ایران",intl:"بین‌المللی",fav:"علاقه‌مندی‌ها",
+  fa:{search:"جستجوی شبکه‌ها…",searchS:"جستجو…",all:"همه",af:"افغانستان",ir:"ایران",intl:"بین‌المللی",fav:"علاقه‌مندی‌ها",
       live:"زنده",loading:"در حال اتصال به پخش…",err:"این شبکه پاسخ نمی‌دهد",errp:"همه منابع موجود امتحان شد. ممکن است شبکه آفلاین یا در منطقهٔ شما محدود باشد.",
       retry:"تلاش دوباره",next:"شبکهٔ بعدی",soon:"به‌زودی",nosrc:"هنوز پخش عمومی برای این شبکه موجود نیست",nosrcp:"این شبکه پخش باز و عمومی ارائه نمی‌دهد (بسیاری از شبکه‌های صدا و سیما فقط برای بینندگان داخل ایران قابل دسترسی‌اند). اگر لینک مجاز پخش دارید، آن را در فایل assets/js/channels.js اضافه کنید.",
       noresult:"شبکه‌ای یافت نشد",nofav:"روی ستاره‌ی هر شبکه بزنید تا اینجا ذخیره شود.",
       auto:"خودکار",pip:"تصویر در تصویر",favt:"علاقه‌مندی",share:"کپی لینک",copied:"لینک کپی شد",
       demo:"پخش آزمایشی — لینک واقعی شبکه تنظیم نشده",
       channels:"شبکه",viewall:"دیدن همه",explore:"کاوش شبکه‌ها",catall:"همه دسته‌ها",
-      foot:"سیمایاب فقط یک رابط تماشا است. مالکیت هر شبکه متعلق به صاحب آن است؛ فقط لینک‌هایی را اضافه کنید که اجازهٔ پخش آن را دارید.",
+      foot:"سیماب فقط یک رابط تماشا است. مالکیت هر شبکه متعلق به صاحب آن است؛ فقط لینک‌هایی را اضافه کنید که اجازهٔ پخش آن را دارید.",
       group:{af:"شبکه‌های افغانستان",ir:"شبکه‌های ایران",intl:"شبکه‌های بین‌المللی"},
       rd:{af:"شبکه‌های ملی، خبری، سرگرمی و فرهنگی افغانستان.",
           ir:"شبکه‌های ملی صدا و سیما، خبر، ورزش، آموزش و فرهنگ ایران.",
@@ -194,9 +194,11 @@ function renderNow(){
     </div>`;
 }
 function renderLists(){renderNav();renderTabs();renderList();renderBrowse()}
+function setPlaceholder(){$("#q").placeholder=innerWidth<520?t("searchS"):t("search")}
+addEventListener("resize",()=>setPlaceholder());
 function renderAll(){
   document.documentElement.lang=lang; document.documentElement.dir=lang==="fa"?"rtl":"ltr";
-  $("#q").placeholder=t("search"); $("#foot").textContent=t("foot");
+  setPlaceholder(); $("#foot").textContent=t("foot");
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===lang));
   closeMega();noMegaUntil=Date.now()+600;renderLists();renderNow();
 }
@@ -303,25 +305,107 @@ function warm(id){
 
 /* ---------- Watermark (Persian eight-pointed star + brand name) ---------- */
 function renderWatermark(){
-  const B=CONFIG.BRAND||{};
-  const en=B.en||"Simayab";
-  const fa="سیمایاب";   // Persian brand name (corrected: Simayab, not Simab)
-  const i=Math.max(1,Math.ceil(en.length/2));
+  const B=CONFIG.BRAND||{en:"Simayab",fa:"سیماب"};
+  const en=B.en, i=Math.max(1,Math.ceil(en.length/2));
   $("#wm").innerHTML=`<svg viewBox="0 0 48 48" fill="none" stroke-linejoin="round">
       <defs><linearGradient id="wmg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ea2ff"/><stop offset="1" stop-color="#2a5bff"/></linearGradient></defs>
       <circle cx="24" cy="24" r="22" stroke="#e8b657" stroke-width="1.6"/>
       <rect x="9.5" y="9.5" width="29" height="29" rx="2" fill="url(#wmg)" stroke="#e8b657" stroke-width="1.6"/>
       <rect x="9.5" y="9.5" width="29" height="29" rx="2" transform="rotate(45 24 24)" fill="#0b2a9a" fill-opacity=".85" stroke="#e8b657" stroke-width="1.6"/>
       <circle cx="24" cy="24" r="5" fill="#e8b657"/><circle cx="24" cy="24" r="2" fill="#0b2a9a"/>
-    </svg><b>${en.slice(0,i)}<i>${en.slice(i)}</i></b><span>${fa}</span>`;
+    </svg><b>${en.slice(0,i)}<i>${en.slice(i)}</i></b><span>${B.fa}</span>`;
+}
+
+/* ---------- Custom player controls ---------- */
+const CI={
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.9l12-7.5a1 1 0 0 0 0-1.8l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1.2"/><rect x="13.5" y="4" width="4.5" height="16" rx="1.2"/></svg>',
+  vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  mute:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path d="m16 9 6 6M22 9l-6 6"/></svg>',
+  fs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+  fsx:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>'
+};
+function initControls(){
+  const P=$("#player"), play=$("#cplay"), mute=$("#cmute"), vol=$("#cvol"), fs=$("#cfs"), pip=$("#cpip");
+  pip.innerHTML=ico.pip; 
+  const sync=()=>{
+    play.innerHTML=v.paused?CI.play:CI.pause; P.classList.toggle("paused",v.paused&&f.style.display!=="block"&&!!v.getAttribute("src"));
+    mute.innerHTML=(v.muted||v.volume===0)?CI.mute:CI.vol; vol.value=v.muted?0:v.volume;
+    fs.innerHTML=(document.fullscreenElement||document.webkitFullscreenElement||P.classList.contains("pfs"))?CI.fsx:CI.fs;
+  };
+  ["play","pause","volumechange","loadeddata","emptied"].forEach(e=>v.addEventListener(e,sync));
+  ["fullscreenchange","webkitfullscreenchange"].forEach(e=>document.addEventListener(e,()=>{
+    // never let the bare <video> go fullscreen on its own (the watermark would be lost): switch to the whole player
+    if((document.fullscreenElement||document.webkitFullscreenElement)===v){
+      const ex=document.exitFullscreen||document.webkitExitFullscreen, rq=P.requestFullscreen||P.webkitRequestFullscreen;
+      Promise.resolve(ex.call(document)).then(()=>rq.call(P)).catch(()=>{});
+    }
+    if(!inFs()&&!P.classList.contains("pfs"))unlockOrientation();
+    sync();
+  }));
+  const toggle=()=>{v.paused?v.play().catch(()=>{}):v.pause()};
+  play.onclick=toggle;
+  mute.onclick=()=>{v.muted=!v.muted;if(!v.muted&&v.volume===0)v.volume=.6};
+  vol.oninput=()=>{v.volume=+vol.value;v.muted=+vol.value===0};
+  fs.onclick=toggleFullscreen;
+  pip.onclick=()=>$("#bpip")&&$("#bpip").click();
+  // first tap on a touch screen only reveals the controls; a mouse click (or a second tap) toggles play/pause
+  let uiAtDown=false,ptype="mouse";
+  P.addEventListener("pointerdown",e=>{uiAtDown=P.classList.contains("ui");ptype=e.pointerType},true);
+  v.addEventListener("click",()=>{if(ptype==="touch"&&!uiAtDown)return;toggle()});
+  // no browser context menu on the player: its "Show controls" would bring back the native fullscreen button
+  P.addEventListener("contextmenu",e=>e.preventDefault());
+  // show controls on movement/touch, hide after 2.5 s of stillness while playing
+  let hideT; const wake=()=>{P.classList.add("ui");clearTimeout(hideT);hideT=setTimeout(()=>P.classList.remove("ui"),2500)};
+  ["pointermove","pointerdown","touchstart","keydown"].forEach(e=>P.addEventListener(e,wake,{passive:true}));
+  P.addEventListener("pointerleave",e=>{if(e.pointerType!=="mouse")return;clearTimeout(hideT);P.classList.remove("ui")});
+  document.addEventListener("keydown",e=>{if(e.key===" "&&!/INPUT|SELECT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)){e.preventDefault();toggle();wake()}});
+  sync();wake();
+}
+// ---- Fullscreen: real fullscreen where the browser allows it (Android, desktop, iPad), rotated "pseudo" fullscreen on iPhone ----
+const isTouch=()=>matchMedia("(pointer:coarse)").matches;
+const isPortrait=()=>innerHeight>innerWidth;
+const inFs=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
+function lockLandscape(){
+  const o=screen.orientation;
+  if(!o||!o.lock||!isTouch())return Promise.resolve(false);
+  return Promise.resolve(o.lock("landscape")).then(()=>true).catch(()=>false);
+}
+function unlockOrientation(){try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch{}}
+// pseudo fullscreen on a portrait phone is drawn rotated 90° so the picture is enlarged in landscape
+function updateRot(){const p=$("#player");p.classList.toggle("rot",p.classList.contains("pfs")&&isPortrait())}
+addEventListener("resize",updateRot);
+addEventListener("orientationchange",()=>{setTimeout(updateRot,120);setTimeout(updateRot,500)});
+function setPseudoFs(on){
+  $("#player").classList.toggle("pfs",on);document.documentElement.classList.toggle("pfs-lock",on);
+  updateRot();
+  if(on&&isTouch())lockLandscape();   // harmless if the browser refuses (iPhone)
+  document.dispatchEvent(new Event("fullscreenchange"));
 }
 function toggleFullscreen(){
   const p=$("#player");
-  if(document.fullscreenElement||document.webkitFullscreenElement){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(inFs()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(p.classList.contains("pfs")){setPseudoFs(false);return}
   const req=p.requestFullscreen||p.webkitRequestFullscreen;
-  if(req)req.call(p).catch(()=>{});
-  else if(v.webkitEnterFullscreen)v.webkitEnterFullscreen();   // iPhone Safari: native video fullscreen only
+  if(!req){setPseudoFs(true);return}
+  let r;try{r=Promise.resolve(req.call(p))}catch{setPseudoFs(true);return}
+  r.then(()=>{
+    if(!isTouch())return;
+    // phones: turn the screen to landscape. If the browser refuses to rotate while the phone is held upright,
+    // leave real fullscreen and use the rotated pseudo fullscreen instead so the video is still enlarged.
+    return lockLandscape().then(ok=>{
+      if(!ok&&isPortrait()){Promise.resolve((document.exitFullscreen||document.webkitExitFullscreen).call(document)).catch(()=>{}).then(()=>setPseudoFs(true))}
+    });
+  }).catch(()=>setPseudoFs(true));
 }
+// phones: hide the header while scrolling down, show it again on scroll up (more room for the picture)
+let lastY=0;
+addEventListener("scroll",()=>{
+  const y=scrollY,top=$("#top");
+  top.classList.toggle("navhide",matchMedia("(max-width:700px)").matches&&y>170&&y>lastY+4);
+  if(y<lastY-4)top.classList.remove("navhide");
+  lastY=y;
+},{passive:true});
 
 /* =====================================================================
    Events
@@ -344,7 +428,6 @@ document.addEventListener("click",e=>{
   const ct=tg.closest("[data-cat]");if(ct){cat=ct.dataset.cat;renderList();renderBrowse();return}
   const lb=tg.closest(".lang button");if(lb){lang=lb.dataset.l;store.set("lz.lang",lang);renderAll();return}
   if(tg.closest("#favbtn"))return setTab(tab==="fav"?"all":"fav",true);
-  if(tg.closest("#fsb"))return toggleFullscreen();
   if(tg.closest("#bfav"))return toggleFav(cur.id);
   if(tg.closest("#bpip")){v.requestPictureInPicture?v.requestPictureInPicture().catch(()=>{}):v.webkitSetPresentationMode&&v.webkitSetPresentationMode("picture-in-picture");return}
   if(tg.closest("#bshare")){navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>toast(t("copied")));return}
@@ -368,7 +451,7 @@ let qt;$("#q").addEventListener("input",e=>{clearTimeout(qt);qt=setTimeout(()=>{
 document.addEventListener("keydown",e=>{
   const typing=/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName);
   if(e.key==="/"&&!typing){e.preventDefault();$("#q").focus();return}
-  if(e.key==="Escape"){closeMega();$("#q").blur();return}
+  if(e.key==="Escape"){closeMega();$("#q").blur();if($("#player").classList.contains("pfs"))setPseudoFs(false);return}
   if(typing)return;
   if(e.key==="ArrowDown"||e.key==="PageDown"){e.preventDefault();step(1)}
   else if(e.key==="ArrowUp"||e.key==="PageUp"){e.preventDefault();step(-1)}
@@ -385,6 +468,7 @@ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&hls){hls.
    ===================================================================== */
 $("#player").addEventListener("dblclick",e=>{if(e.target===v||e.target===f)toggleFullscreen()});
 renderWatermark();
+initControls();
 renderAll();
 const fromHash=location.hash.replace(/^#\/?/,"").replace(/^watch\//,"").replace(/\/$/,"");
 play(byId(fromHash)||byId(store.get("lz.last",null))||byId(CONFIG.DEFAULT_CHANNEL)||CHANNELS[0]);
