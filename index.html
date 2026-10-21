@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Simayab — Live TV from Afghanistan, Iran & the World</title>
+<meta name="description" content="Simayab: watch Afghan, Iranian and international news TV channels live, instantly.">
+<meta name="theme-color" content="#070b14">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.17/hls.min.js" defer></script>
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="bar">
+    <a class="logo" href="#/" aria-label="Simayab">
+      <i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 9l9 13 9-13z"/><path d="M3 9h18M8 9l4 13 4-13M12 2l-4 7M12 2l4 7"/></svg></i>
+      <span>Sima<b>yab</b></span>
+    </a>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off">
+      <kbd>/</kbd>
+    </label>
+    <div class="actions">
+      <button class="pill" id="favbtn" type="button" aria-label="Favorites">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>
+        <b id="favn">0</b>
+      </button>
+      <div class="lang"><button data-l="en" class="on">EN</button><button data-l="fa">دری</button></div>
+    </div>
+  </div>
+  <nav class="regions" id="regions" aria-label="Channel regions">
+    <div class="rwrap" id="rwrap"></div>
+    <div class="mega" id="mega" hidden></div>
+  </nav>
+</header>
+
+<section class="watch" id="watch">
+  <div class="stage">
+    <div class="player" id="player">
+      <video id="v" playsinline controls controlslist="nofullscreen" preload="auto"></video>
+      <iframe id="f" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="origin"></iframe>
+      <div class="ov" id="ov"><div class="box" id="ovbox"></div></div>
+      <div class="wm" id="wm" aria-hidden="true"></div>
+      <button class="fsb" id="fsb" type="button" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+    <div class="now" id="now"></div>
+  </div>
+
+  <aside aria-label="Channel guide">
+    <div class="aside-in">
+      <div class="tabs" id="tabs"></div>
+      <div class="list" id="list"></div>
+    </div>
+  </aside>
+</section>
+
+<main class="browse" id="browse"></main>
+
+<footer id="foot"></footer>
+<div class="toast" id="toast"></div>
+
+<script src="/assets/js/channels.js" defer></script>
+<script src="/assets/js/app.js" defer></script>
+</body>
+</html>
