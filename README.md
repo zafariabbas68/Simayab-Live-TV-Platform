@@ -4,7 +4,7 @@ Static web platform for watching Afghan, Iranian and international news channels
 No build step, no dependencies.
 
 
-## live demo: https://simayab-live-tv-platform.vercel.app/#/irib-tv-3
+## live demo: https://simayab-live-tv-platform.vercel.app
 
 ## Project structure
 ```
